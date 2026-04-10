@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "validate-data": "tsx scripts/validate-data.ts"
   },
   "dependencies": {
     "next": "14.2.5",
@@ -16,6 +18,8 @@
   "devDependencies": {
     "@types/node": "20.14.2",
     "@types/react": "18.3.3",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "tsx": "4.13.0",
+    "vitest": "4.1.4"
   }
 }
