@@ -1,0 +1,44 @@
+[
+  {
+    "id": "faq-1",
+    "question": "How do I reset my password?",
+    "answer": "To reset your password, go to the account settings page, choose 'Reset password', and follow the emailed instructions.",
+    "tags": ["account", "security"],
+    "keywords": ["password", "reset", "forgot"]
+  },
+  {
+    "id": "faq-2",
+    "question": "Can I change my subscription plan?",
+    "answer": "Yes. Visit the billing section, choose a new plan, and confirm the update. Your changes will apply immediately.",
+    "tags": ["billing", "subscription"],
+    "keywords": ["plan", "upgrade", "downgrade", "subscription"]
+  },
+  {
+    "id": "faq-3",
+    "question": "How do I contact support?",
+    "answer": "Contact support using the chat widget in the app or email support@example.com for faster assistance.",
+    "tags": ["support", "contact"],
+    "keywords": ["support", "help", "contact", "email"]
+  },
+  {
+    "id": "faq-4",
+    "question": "Where can I find my invoices?",
+    "answer": "Invoices are available in the billing dashboard under 'Invoices'. You can download PDFs for any past billing period.",
+    "tags": ["billing", "invoices"],
+    "keywords": ["invoice", "receipt", "billing"]
+  },
+  {
+    "id": "faq-5",
+    "question": "How do I update my profile information?",
+    "answer": "Open your profile page, edit the fields you want to change, and save the updates to keep your information current.",
+    "tags": ["account", "profile"],
+    "keywords": ["profile", "update", "information", "edit"]
+  },
+  {
+    "id": "faq-6",
+    "question": "What should I do if I see an error message?",
+    "answer": "If you see an error message, try refreshing the page first. If the issue persists, contact support with the error details.",
+    "tags": ["troubleshooting", "support"],
+    "keywords": ["error", "issue", "problem", "troubleshooting"]
+  }
+]
