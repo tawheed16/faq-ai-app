@@ -1,81 +1,36 @@
 import { NextResponse } from 'next/server';
 
-import faqs from '../../../../data/faqs.json';
+import faqs from '../../../data/faqs.json';
+import { searchFaqs } from '../../../lib/faq-search';
+import type { FaqEntry } from '../../../lib/faq-validation';
 
-type FaqEntry = {
-  id: string;
-  question: string;
-  answer: string;
-  tags: string[];
-  keywords?: string[];
-};
-
-type SearchPayload = {
-  query: string;
-};
-
-type SearchResult = {
-  best: FaqEntry | null;
-  related: FaqEntry[];
-  lowConfidence: boolean;
-};
-
-const MIN_CONFIDENCE_SCORE = 2;
-const TOP_RELATED_COUNT = 3;
-
-function normalizeText(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-function scoreFaq(queryTokens: string[], faq: FaqEntry) {
-  const questionText = faq.question.toLowerCase();
-  const tagText = faq.tags.join(' ').toLowerCase();
-  const keywordText = (faq.keywords || []).join(' ').toLowerCase();
-
-  return queryTokens.reduce((score, token) => {
-    let tokenScore = 0;
-
-    if (questionText.includes(token)) tokenScore += 3;
-    if (tagText.includes(token)) tokenScore += 2;
-    if (keywordText.includes(token)) tokenScore += 1;
-
-    return score + tokenScore;
-  }, 0);
+function createErrorResponse(message: string, status = 400) {
+  return NextResponse.json({ error: message }, { status });
 }
 
 export async function POST(request: Request) {
-  const body: SearchPayload = await request.json();
-  const query = (body.query || '').trim();
-  const tokens = normalizeText(query);
+  let body: unknown;
 
-  if (!query || tokens.length === 0) {
-    return NextResponse.json<SearchResult>({
-      best: null,
-      related: [],
-      lowConfidence: true,
-    });
+  try {
+    body = await request.json();
+  } catch {
+    return createErrorResponse('Invalid JSON body.');
   }
 
-  const scoredFaqs = faqs
-    .map((faq) => ({ faq, score: scoreFaq(tokens, faq) }))
-    .sort((a, b) => b.score - a.score);
+  if (typeof body !== 'object' || body === null || !('query' in body)) {
+    return createErrorResponse('Request body must include a query string.');
+  }
 
-  const bestMatch = scoredFaqs[0];
-  const matchedBest = bestMatch?.score > 0 ? bestMatch.faq : null;
-  const lowConfidence = bestMatch ? bestMatch.score < MIN_CONFIDENCE_SCORE : true;
+  const queryValue = (body as { query?: unknown }).query;
+  if (typeof queryValue !== 'string') {
+    return createErrorResponse('Query must be a string.');
+  }
 
-  const related = scoredFaqs
-    .filter((item) => item.faq.id !== matchedBest?.id && item.score > 0)
-    .slice(0, TOP_RELATED_COUNT)
-    .map((item) => item.faq);
+  const query = queryValue.trim();
+  if (!query) {
+    return createErrorResponse('Query must not be empty.');
+  }
 
-  return NextResponse.json<SearchResult>({
-    best: matchedBest,
-    related,
-    lowConfidence,
-  });
+  const result = searchFaqs(query, faqs as FaqEntry[]);
+  return NextResponse.json(result);
 }
