@@ -1,0 +1,24 @@
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 30_000,
+  expect: {
+    timeout: 5000,
+  },
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retried: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  use: {
+    actionTimeout: 10_000,
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+  },
+  webServer: {
+    command: 'npm run dev',
+    port: 3000,
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
+});
