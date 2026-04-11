@@ -1,11 +1,4 @@
-import { FaqEntry } from './faq-validation';
-
-type SearchResult = {
-  best: FaqEntry | null;
-  related: FaqEntry[];
-  lowConfidence: boolean;
-  bestScore: number;
-};
+import type { FaqEntry, SearchResult } from './types';
 
 const DEFAULT_LOW_CONFIDENCE_THRESHOLD = 2;
 const TOP_RELATED_COUNT = 3;

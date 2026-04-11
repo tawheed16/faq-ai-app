@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import faqs from '../../../data/faqs.json';
 import { searchFaqs } from '../../../lib/faq-search';
-import type { FaqEntry } from '../../../lib/faq-validation';
+import type { FaqEntry } from '../../../lib/types';
 
 function createErrorResponse(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });

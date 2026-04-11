@@ -1,10 +1,4 @@
-export type FaqEntry = {
-  id: string;
-  question: string;
-  answer: string;
-  tags: string[];
-  keywords?: string[];
-};
+import type { FaqEntry } from './types';
 
 export type ValidationResult =
   | { valid: true; data: FaqEntry[] }

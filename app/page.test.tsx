@@ -67,4 +67,33 @@ describe('HomePage', () => {
 
     expect(await screen.findByText(/search request failed\./i)).toBeInTheDocument();
   });
+
+  it('shows a low-confidence note when the API response indicates lowConfidence', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      Promise.resolve({
+        ok: true,
+        json: async () => ({
+          best: {
+            id: 'faq-1',
+            question: 'Can I work part time while studying?',
+            answer: 'Yes, eligible students can work part time during study periods.',
+            tags: ['work'],
+          },
+          related: [],
+          lowConfidence: true,
+          bestScore: 1,
+        }),
+      } as Response)
+    );
+
+    render(<HomePage />);
+
+    const input = screen.getByLabelText(/what do you want to know/i);
+    fireEvent.change(input, { target: { value: 'Can I work while studying?' } });
+
+    const button = screen.getByRole('button', { name: /search faq/i });
+    fireEvent.click(button);
+
+    expect(await screen.findByText(/this answer is the best match, but confidence is low\./i)).toBeInTheDocument();
+  });
 });

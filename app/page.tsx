@@ -2,19 +2,7 @@
 
 import { useState } from 'react';
 
-type FaqEntry = {
-  id: string;
-  question: string;
-  answer: string;
-  tags: string[];
-  keywords?: string[];
-};
-
-type SearchResult = {
-  best: FaqEntry | null;
-  related: FaqEntry[];
-  lowConfidence: boolean;
-};
+import type { FaqEntry, SearchResult } from '../lib/types';
 
 export default function HomePage() {
   const [query, setQuery] = useState('');
