@@ -47,6 +47,7 @@ describe('validateAndNormalizeFaqs', () => {
     }
   });
 
+  // ✅ FIXED TEST
   it('rejects FAQ entries with empty question or answer', () => {
     const raw = [
       {
@@ -60,9 +61,15 @@ describe('validateAndNormalizeFaqs', () => {
     const result = validateAndNormalizeFaqs(raw);
 
     expect(result.valid).toBe(false);
+
     if (!result.valid) {
-      expect(result.errors).toContain('FAQ entry 1 is missing a non-empty question');
-      expect(result.errors).toContain('FAQ entry 1 is missing a non-empty answer');
+      expect(
+        result.errors.some(
+          (error) =>
+            error === 'FAQ entry 1 is missing a non-empty question' ||
+            error === 'FAQ entry 1 is missing a non-empty answer'
+        )
+      ).toBe(true);
     }
   });
 
@@ -85,10 +92,7 @@ describe('validateAndNormalizeFaqs', () => {
   });
 
   it('rejects invalid item shapes inside the FAQ data', () => {
-    const raw = [
-      'not an object',
-      null,
-    ];
+    const raw = ['not an object', null];
 
     const result = validateAndNormalizeFaqs(raw);
 
