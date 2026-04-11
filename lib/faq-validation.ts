@@ -46,26 +46,24 @@ export function validateAndNormalizeFaqs(raw: unknown): ValidationResult {
     const tags = (item as { tags?: unknown }).tags;
     const keywords = (item as { keywords?: unknown }).keywords;
 
-    let hasError = false;
-
     if (!assertString(id) || !id.trim()) {
       errors.push(`${prefix} is missing a non-empty string id`);
-      hasError = true;
+      return;
     }
 
     if (!assertString(question) || !question.trim()) {
       errors.push(`${prefix} is missing a non-empty question`);
-      hasError = true;
+      return;
     }
 
     if (!assertString(answer) || !answer.trim()) {
       errors.push(`${prefix} is missing a non-empty answer`);
-      hasError = true;
+      return;
     }
 
     if (!assertStringArray(tags) || tags.length === 0 || tags.some((tag) => !tag.trim())) {
       errors.push(`${prefix} must include a non-empty array of tags`);
-      hasError = true;
+      return;
     }
 
     if (
@@ -73,19 +71,18 @@ export function validateAndNormalizeFaqs(raw: unknown): ValidationResult {
       (!assertStringArray(keywords) || keywords.some((keyword) => !keyword.trim()))
     ) {
       errors.push(`${prefix} has invalid keywords; they must be non-empty strings`);
-      hasError = true;
-    }
-
-    if (hasError) {
       return;
     }
+
+    const normalizedKeywords =
+      keywords !== undefined ? keywords.map(normalizeKeywords) : undefined;
 
     normalized.push({
       id: normalizeText(id),
       question: normalizeText(question),
       answer: normalizeText(answer),
       tags: tags.map(normalizeTag),
-      keywords: keywords ? keywords.map(normalizeKeywords) : undefined,
+      keywords: normalizedKeywords,
     });
   });
 
