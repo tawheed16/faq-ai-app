@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-
-import faqs from '../../../data/faqs.json';
-import { searchFaqs } from '../../../lib/faq-search';
-import type { FaqEntry } from '../../../lib/types';
+import { searchFaqQuery } from '../../../lib/faq-service';
 
 function createErrorResponse(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
@@ -31,6 +28,10 @@ export async function POST(request: Request) {
     return createErrorResponse('Query must not be empty.');
   }
 
-  const result = searchFaqs(query, faqs as FaqEntry[]);
-  return NextResponse.json(result);
+  try {
+    const result = searchFaqQuery(query);
+    return NextResponse.json(result);
+  } catch (error) {
+    return createErrorResponse('FAQ service unavailable.');
+  }
 }
