@@ -34,6 +34,7 @@ export function validateAndNormalizeFaqs(raw: unknown): ValidationResult {
 
   raw.forEach((item, index) => {
     const prefix = `FAQ entry ${index + 1}`;
+
     if (typeof item !== 'object' || item === null) {
       errors.push(`${prefix} must be an object`);
       return;
@@ -45,23 +46,37 @@ export function validateAndNormalizeFaqs(raw: unknown): ValidationResult {
     const tags = (item as { tags?: unknown }).tags;
     const keywords = (item as { keywords?: unknown }).keywords;
 
+    let hasError = false;
+
     if (!assertString(id) || !id.trim()) {
       errors.push(`${prefix} is missing a non-empty string id`);
-    }
-    if (!assertString(question) || !question.trim()) {
-      errors.push(`${prefix} is missing a non-empty question`);
-    }
-    if (!assertString(answer) || !answer.trim()) {
-      errors.push(`${prefix} is missing a non-empty answer`);
-    }
-    if (!assertStringArray(tags) || tags.length === 0 || tags.some((tag) => !tag.trim())) {
-      errors.push(`${prefix} must include a non-empty array of tags`);
-    }
-    if (keywords !== undefined && (!assertStringArray(keywords) || keywords.some((keyword) => !keyword.trim()))) {
-      errors.push(`${prefix} has invalid keywords; they must be non-empty strings`);
+      hasError = true;
     }
 
-    if (errors.length > 0) {
+    if (!assertString(question) || !question.trim()) {
+      errors.push(`${prefix} is missing a non-empty question`);
+      hasError = true;
+    }
+
+    if (!assertString(answer) || !answer.trim()) {
+      errors.push(`${prefix} is missing a non-empty answer`);
+      hasError = true;
+    }
+
+    if (!assertStringArray(tags) || tags.length === 0 || tags.some((tag) => !tag.trim())) {
+      errors.push(`${prefix} must include a non-empty array of tags`);
+      hasError = true;
+    }
+
+    if (
+      keywords !== undefined &&
+      (!assertStringArray(keywords) || keywords.some((keyword) => !keyword.trim()))
+    ) {
+      errors.push(`${prefix} has invalid keywords; they must be non-empty strings`);
+      hasError = true;
+    }
+
+    if (hasError) {
       return;
     }
 
